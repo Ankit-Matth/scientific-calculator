@@ -3,15 +3,15 @@ let moreBtns = document.getElementById('moreBtns')
 let ansDisplay = document.getElementById('ansDisplay')
 
 function checkOverflow() {  
-    if (ansDisplay.value.length > 16) {
-      ansDisplay.style.fontSize="1.2rem"
+    if (ansDisplay.value.length <= 16) {
+        ansDisplay.style.fontSize = "1.6rem";
+    } else if (16 < ansDisplay.value.length && ansDisplay.value.length <= 22) {
+        ansDisplay.style.fontSize = "1.2rem";
+    } else if (22 < ansDisplay.value.length && ansDisplay.value.length <= 33) {
+        ansDisplay.style.fontSize = "0.8rem";
+    } else {
+        ansDisplay.style.fontSize = "0.6rem";
     } 
-    if (ansDisplay.value.length > 22) {
-        ansDisplay.style.fontSize="0.8rem"
-    }
-    if (ansDisplay.value.length > 33) {
-        ansDisplay.style.fontSize="0.6rem"
-    }
 }
 
 moreBtns.addEventListener('click', () => {
