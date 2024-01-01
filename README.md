@@ -4,7 +4,7 @@ I created this scientific calculator using HTML, CSS, and JavaScript. This calcu
 
 ## Quick Demo
 
-- **Live link** -
+- **Live link** - https://ankit-matth.github.io/scientific-calculator/
 
 
 https://github.com/Ankit-Matth/scientific-calculator/assets/146843890/b7572f8f-5dd1-4e53-8718-4016971c8be3
