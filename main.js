@@ -16,8 +16,8 @@ function checkOverflow() {
 
 moreBtns.addEventListener('click', () => {
 
-    if (moreBtns.firstElementChild.getAttribute('src') === "/images/moreBtns.png") {
-        moreBtns.firstElementChild.setAttribute("src", "/images/simpleCalc.png")
+    if (moreBtns.firstElementChild.getAttribute('src') === "images/moreBtns.png") {
+        moreBtns.firstElementChild.setAttribute("src", "images/simpleCalc.png")
         let arrTop = Array.from(document.getElementsByClassName('simpleCalcTopBtns'))
         let arrBtns = Array.from(document.getElementsByClassName('simpleCalcBtns'))
         arrTop.forEach(element => {
@@ -30,7 +30,7 @@ moreBtns.addEventListener('click', () => {
         del.parentElement.style.lineHeight = "0.5rem"
         ansDisplay.focus()
     } else {
-        moreBtns.firstElementChild.setAttribute("src", "/images/moreBtns.png")
+        moreBtns.firstElementChild.setAttribute("src", "images/moreBtns.png")
         let arrTop = Array.from(document.getElementsByClassName('topBtns'))
         let arrBtns = Array.from(document.getElementsByClassName('smallBtns'))
         arrBtns.forEach(element => {
