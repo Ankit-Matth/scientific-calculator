@@ -165,7 +165,15 @@ function solveTrigo(val) {
     return val;
 }
 
+function isValidInput(input) {
+    let pattern = /^[\d.]+$/;
+    return pattern.test(input);
+}
+
 function decimalToFraction(decimal) {
+    if (!isValidInput(decimal)) {
+        return -1;
+    }
     let numerator = decimal;
     let denominator = 1;
 
@@ -196,11 +204,16 @@ Array.from(allbtns).forEach(element => {
                     });
                     expr = eval(expr)
                 } else if (ansDisplay.value.includes("!")) {
-                    let factRegex = /(\d+)!/g
-                    expr = expr.replace(factRegex, function (match, digits) {
-                        return calculateFactorial(parseInt(digits, 10));
-                    });
-                    expr = eval(expr);
+                    let pattern = /^-\d+!(.+)?$/g
+                    if (pattern.test(ansDisplay.value)) {
+                        expr = eval(expr);
+                    } else {
+                        let factRegex = /(\d+)!/g
+                        expr = expr.replace(factRegex, function (match, digits) {
+                            return calculateFactorial(parseInt(digits, 10));
+                        });
+                        expr = eval(expr);
+                    }
                 } else if (ansDisplay.value.includes("P")) {
                     let permuRegex = /(\d+)P(\d+)/g
                     expr = expr.replace(permuRegex, function (match, n, r) {
@@ -279,7 +292,11 @@ Array.from(allbtns).forEach(element => {
         } else if (e.target.innerText == "x/y") {
             let temp = decimalToFraction(ansDisplay.value)
             ansDisplay.value = ""
-            insertAtCursor(temp)
+            if (temp != -1) {
+                insertAtCursor(temp)
+            } else {
+                ansDisplayError()
+            }
         } else if (e.target.innerText == "deg") {
             isDegActive = true
             ansDisplay.value = ""
@@ -293,7 +310,11 @@ Array.from(allbtns).forEach(element => {
         } else if (e.target.innerText == "ln") {
             insertAtCursor("ln()")
         } else if (e.target.innerText == "log") {
-            insertAtCursor("log(,)");
+            ansDisplay.value = 'log(number,base)';
+            setTimeout(() => {
+                ansDisplay.value = ''
+                insertAtCursor("log(,)");
+            }, 1200)
         } else if (e.target.innerText == "sin") {
             insertAtCursor("sin()");
         } else if (e.target.innerText == "cos") {
