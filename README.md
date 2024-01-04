@@ -16,7 +16,7 @@ https://github.com/Ankit-Matth/scientific-calculator/assets/146843890/b7572f8f-5
 2. CSS
 3. JavaScript
 
-In this project, I used HTML to structure the content, CSS to ensure styling and responsiveness, and JavaScript to solve dynamic interactions and mathematical expressions. To achieve the mathematical computations, I used various built-in functions in JavaScript, such as eval() and the functions like Math.log(), Math.PI, Math.sin(), and others. Additionally, I applied the concept of regular expressions to handle expressions within the project.
+In this project, I used HTML to structure the content, CSS to ensure styling and responsiveness, and JavaScript for dynamic interactions and to solve mathematical expressions. To achieve the mathematical computations, I used various built-in functions in JavaScript, such as eval() and the functions like Math.log(), Math.PI, Math.sin(), and others. Additionally, I applied the concept of regular expressions to handle expressions within the project.
 
 ## Getting Started 
 
