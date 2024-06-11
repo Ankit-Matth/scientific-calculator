@@ -141,47 +141,173 @@ button:active {
 
 .modal-content {
 	background: #fff;
-	padding: 10px 0px;
 	border-radius: 6px;
-	max-width: 80%;
-	max-height: 95%;
+	width: 38.75rem;
 	margin: 0 auto;
 	text-align: center;
 	display: flex;
-}
-
-video {
-	width: 80%;
-	margin-top: 1rem;
-	border: 4px solid black;
-	border-radius: 6px;
+	flex-direction: row-reverse;
+	justify-content: space-between;
 }
 
 .close-button {
 	padding: 0.1rem 1rem;
+	padding-bottom: 0.2rem;
 	font-size: 1.5rem;
-	color: red;
-	border: 2px solid rgb(255, 0, 0);
+	color: #ccc;
+	border: 2px solid #ccc;
 	border-radius: 4px;
 	cursor: pointer;
 	display: inline;
-	margin-right: 5px;
 }
 
-@media screen and (max-width: 300px) {
-	html {
-		font-size: 81%;
-	}
+.close-button:hover {
+	background-color: #ccc;
+	color: white;
 }
 
-@media screen and (max-width: 500px) {
-	.modal-content {
-		max-width: 90%;
-	}
+.settings-panel {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	width: 31.25rem;
+}
+
+.setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.57rem;
+}
+
+.setting > span {
+    flex-grow: 1;
+	text-align: left;
+}
+
+.toggle {
+    width: 2.5rem;
+    height: 1.25rem;
+    background-color: #ccc;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.toggle::after {
+    content: '';
+    width: 1rem;
+    height: 1rem;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.3s;
+}
+
+.toggle.active {
+    background-color: #4caf50;
+}
+
+.toggle.active::after {
+    left: 1.375rem;
+}
+
+.precision-control {
+    display: flex;
+    align-items: center;
+}
+
+.precision-button {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ccc;
+    border-radius: 4px;
+    user-select: none;
+}
+
+.precision-button:hover {
+    background-color: #bbb;
+}
+
+#precision-value {
+    width: 1.5rem;
+	margin: 0 4px;
+    text-align: center;
 }
 
 @media screen and (min-width: 567px) {
 	.modal-content {
-		padding: 30px;
+		padding: 20px;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	html {
+		font-size: 97%;
+	}
+
+	.modal-content {
+		width: 23rem;
+	}
+
+	.modal-content {
+		padding: 10px;
+	}
+
+	.close-button {
+		font-size: 0.9rem;
+		margin-bottom: 0.1rem;
+	}
+
+	.settings-panel {
+		width: 18.5rem;
+		padding: 15px;
+	}
+
+	.setting > span {
+		font-size: 0.7rem;
+	}
+}
+
+@media screen and (max-width: 380px) {
+	html {
+		font-size: 90%;
+	}
+
+	.modal-content {
+		width: 22.5rem;
+	}
+
+	.modal-content {
+		padding: 10px;
+	}
+
+	.close-button {
+		font-size: 0.9rem;
+		margin-bottom: 0.1rem;
+	}
+
+	.settings-panel {
+		width: 17.5rem;
+		padding: 10px;
+	}
+
+	.setting > span {
+		font-size: 0.6rem;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	html {
+		font-size: 78%;
 	}
 }

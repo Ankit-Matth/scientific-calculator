@@ -18,22 +18,22 @@
                     <button class="hidden inv">sin<sup style="display: none;">-1</sup></button>
                     <button class="hidden inv">cos<sup style="display: none;">-1</sup></button>
                     <button class="hidden inv">tan<sup style="display: none;">-1</sup></button>
+                    <button class="hidden" id="factorial">x<i>!</i></button>
+                    <button class="hidden smallFont" style="line-height: 0.6rem;margin-right: 2.6px;" id="history"><img src="images/history.png" width="14.5rem" alt="history"></button>
+                </div>
+                <div class="row">
+                    <button class="hidden">ln</button>
+                    <button class="hidden" onclick="handleDegRad('deg')" id="deg">deg</button>
+                    <button class="hidden" onclick="handleDegRad('rad')" id="rad">rad</button>
                     <button class="hidden smallFont"><sup>n</sup>P<sub>r</sub></button>
                     <button class="hidden smallFont" style="margin-right: 2.6px;"><sup>n</sup>C<sub>r</sub></button>
                 </div>
                 <div class="row">
-                    <button class="hidden">inv</button>
-                    <button class="hidden" onclick="handleDegRad('deg')" id="deg">deg</button>
-                    <button class="hidden" onclick="handleDegRad('rad')" id="rad">rad</button>
-                    <button class="hidden" id="factorial">x<i>!</i></button>
-                    <button class="hidden smallFont" style="margin-right: 2.6px;">x/y</button>
-                </div>
-                <div class="row">
-                    <button class="hidden">ln</button>
+                    <button class="hidden" id="inverseBtn">inv</button>
                     <button class="simpleCalcTopBtns" style="line-height: 0.5rem;" id="moreBtns"><img src="images/moreBtns.png" width="15rem" alt="More"></button>
                     <button class="simpleCalcTopBtns">(</button>
                     <button class="simpleCalcTopBtns">)</button>
-                    <button class="simpleCalcTopBtns" style="line-height: 0.6rem;margin-right: 2.6px;" id="info" title="More Info."><i class="fa-regular fa-circle-question" style="color: #000000;"></i></button>
+                    <button class="simpleCalcTopBtns" style="line-height: 0.6rem;margin-right: 2.6px;" id="settingBtn" title="Setting"><img src="images/setting.png" id="setting" width="15rem" alt="Setting"></button>
                 </div>
                 <div class="row">
                     <button class="hidden smallFont">e<sup>x</sup></button>
@@ -74,11 +74,32 @@
         </div>
         <div id="myModal" class="modal">
             <div class="modal-content">
-                <div class="bottomContent">
-                    <video src="recording.mp4" controls autoplay poster="images/Demo.png"></video>
-                </div>
-                <div class="topContent">
+                <div class="topRight">
                     <h2 class="close-button" onclick="closeModal()">X</h2>
+                </div>
+                <div class="remaining">
+                    <div class="settings-panel">
+                        <div class="setting">
+                            <span>Show All Buttons by Default</span>
+                            <div class="toggle" id="buttons-visible-toggle"></div>
+                        </div>
+                        <div class="setting">
+                            <span>Set Radians as Default Angle Unit</span>
+                            <div class="toggle" id="radian-toggle"></div>
+                        </div>
+                        <div class="setting">
+                            <span>Show Inverse Trigonometry by Default</span>
+                            <div class="toggle" id="inverse-trig-toggle"></div>
+                        </div>
+                        <div class="setting" style="margin-bottom: 0px;">
+                            <span>Set Precision (For Decimal Values)</span>
+                            <div class="precision-control">
+                                <span id="precision-decrease" class="precision-button">-</span>
+                                <span id="precision-value"></span>
+                                <span id="precision-increase" class="precision-button">+</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

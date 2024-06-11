@@ -1,6 +1,55 @@
 let del = document.getElementById('del')
+let setting = document.getElementById('setting')
 let moreBtns = document.getElementById('moreBtns')
 let ansDisplay = document.getElementById('ansDisplay')
+
+function onUpdateSetting(){
+    let btnsVisibility = document.getElementById('buttons-visible-toggle')
+    let angleType = document.getElementById('radian-toggle')
+    let trigoType = document.getElementById('inverse-trig-toggle')
+    let precisionValElement = document.getElementById('precision-value')
+    let inverseBtn = document.getElementById('inverseBtn')
+    let deg = document.getElementById('deg')
+    let rad = document.getElementById('rad')
+    let allClear = document.getElementById('allClear')
+
+    if (localStorage.getItem('allBtns')=="false") {
+        btnsVisibility.classList.remove('active');
+    } else {
+        btnsVisibility.classList.add('active');
+        if (allClear.classList.contains('simpleCalcBtns')) {
+            moreBtns.click()
+        }
+    }
+
+    if (localStorage.getItem('angleType')=="deg") {
+        angleType.classList.remove('active');
+        deg.click()
+    } else {
+        angleType.classList.add('active');
+        rad.click()
+    }
+
+    if (localStorage.getItem('trigoType')=="simple") {
+        trigoType.classList.remove('active');
+    } else {
+        trigoType.classList.add('active');
+        inverseBtn.click()
+    }
+
+    precisionValElement.textContent = parseInt(localStorage.getItem('precision'));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('angleType')) {
+        localStorage.setItem('allBtns', 'false');
+        localStorage.setItem('angleType', 'deg');
+        localStorage.setItem('trigoType', 'simple');
+        localStorage.setItem('precision', '6');
+    }
+
+    onUpdateSetting();
+});
 
 function checkOverflow() {  
     if (ansDisplay.value.length <= 16) {
@@ -27,6 +76,7 @@ moreBtns.addEventListener('click', () => {
             element.className = "smallBtns"
         });
         del.setAttribute("width", "15rem")
+        setting.setAttribute("width", "14rem")
         del.parentElement.style.lineHeight = "0.5rem"
         ansDisplay.focus()
     } else {
@@ -106,6 +156,7 @@ function toRadians(degrees) {
 function toDegrees(radians) {
     return radians * (180 / Math.PI);
 }
+
 let isDegActive = true;
 
 function handleDegRad(temp) {
@@ -118,19 +169,11 @@ function handleDegRad(temp) {
     }
 }
 
-function byDefaultDeg() {
-    if (isDegActive) {
-        document.getElementById('deg').style.color = "red"
-        document.getElementById('rad').style.color = "black"
-    }
-}
-byDefaultDeg()
-
 function solveTrigo(val) {
-    let trigoRegex = /(sin|cos|tan|sin⁻¹|cos⁻¹|tan⁻¹)\((\d+(\.\d+)?)\)/g;
+    let trigoRegex = /(sin|cos|tan|sin⁻¹|cos⁻¹|tan⁻¹)(\-?\+?\d*\.?\d+)/g;
     val = val.replace(trigoRegex, function (match, func, angle) {
-        var angleValue;
-        if (isDegActive) {
+        let angleValue;
+        if ((func == "sin" || func == "cos" || func == "tan") && isDegActive) {
             angleValue = toRadians(parseFloat(angle));
         } else {
             angleValue = parseFloat(angle);
@@ -148,13 +191,13 @@ function solveTrigo(val) {
                 tempResult = Math.tan(angleValue);
                 break;
             case "sin⁻¹":
-                tempResult = isDegActive ? toDegrees(Math.asin(angle)) : Math.asin(angle);
+                tempResult = isDegActive ? toDegrees(Math.asin(angleValue)) : Math.asin(angleValue);
                 break;
             case "cos⁻¹":
-                tempResult = isDegActive ? toDegrees(Math.acos(angle)) : Math.acos(angle);
+                tempResult = isDegActive ? toDegrees(Math.acos(angleValue)) : Math.acos(angleValue);
                 break;
             case "tan⁻¹":
-                tempResult = isDegActive ? toDegrees(Math.atan(angle)) : Math.atan(angle);
+                tempResult = isDegActive ? toDegrees(Math.atan(angleValue)) : Math.atan(angleValue);
                 break;
             default:
                 tempResult = match;
@@ -165,87 +208,113 @@ function solveTrigo(val) {
     return val;
 }
 
-function isValidInput(input) {
-    let pattern = /^[\d.]+$/;
-    return pattern.test(input);
-}
-
-function decimalToFraction(decimal) {
-    if (!isValidInput(decimal)) {
-        return -1;
-    }
-    let numerator = decimal;
-    let denominator = 1;
-
-    while (numerator % 1 !== 0) {
-        numerator *= 10;
-        denominator *= 10;
-    }
-
-    const gcd = (a, b) => (b === 0 ? a : gcd(b, a % b));
-    const divisor = gcd(numerator, denominator);
-
-    return `${numerator / divisor}/${denominator / divisor}`;
-}
 
 let allbtns = document.querySelectorAll('button')
 let invCodeExecuted = true;
+
+function calculateAnswer(expr){
+
+    if (expr.includes("log")) {
+        let logRegex = /log\(([^,]+),([^)]+)\)/g;
+        expr = expr.replace(logRegex, function (match, x, base) {
+            x = parseFloat(x);
+            base = parseFloat(base);
+            if (x <= 0 || base <= 0 || base === 1) {
+                throw new Error("Invalid logarithmic expression");
+            }
+            return Math.log(x) / Math.log(base);
+        });
+        expr = calculateAnswer(expr);
+        return expr;
+    }
+    
+    while (expr.includes("(")) {
+        const startIndex = expr.lastIndexOf("(");
+        const endIndex = expr.indexOf(")", startIndex);
+        const innerExpr = expr.substring(startIndex + 1, endIndex);
+        const innerResult = calculateAnswer(innerExpr);
+
+        if (innerResult < 0 && ansDisplay.value.includes("!")) {
+            throw new Error("Factorial is defined for integers only.");
+        }
+
+        expr = expr.substring(0, startIndex) + innerResult + expr.substring(endIndex + 1);
+    }
+
+    if (expr.includes("√")) {
+        let squareRootRegex = /(\d*\.?\d*)?√([\+\-]?\d*\.?\d*)/g;
+        expr = expr.replace(squareRootRegex, function (match, coefficient, digits) {
+            if (!coefficient) coefficient = 1;
+            
+            if (digits.startsWith('+')) {
+                digits = digits.slice(1);
+            }
+    
+            if (digits.startsWith('-')) {
+                throw new Error("Square root of a negative number is not allowed.");
+            }
+    
+            return coefficient * Math.sqrt(parseFloat(digits));
+        });
+    } 
+
+    if (expr.includes("!")) {
+        let pattern = /(\d*\.\d*!)|(!\d)|(!\.\d*)/g
+        if (pattern.test(ansDisplay.value)) {
+            throw new Error("Factorial is defined for integers only.");
+        } else {
+            let factRegex = /(\d+)!/g
+            expr = expr.replace(factRegex, function (match, digits) {
+                return calculateFactorial(parseInt(digits, 10));
+            });
+        }
+    }
+    
+    if (expr.includes("P")) {
+        let permuRegex = /(\d+)P(\d+)/g
+        expr = expr.replace(permuRegex, function (match, n, r) {
+            return permutation(n, r);
+        });
+    }
+    
+    if (expr.includes("C")) {
+        let permuRegex = /(\d+)C(\d+)/g
+        expr = expr.replace(permuRegex, function (match, n, r) {
+            return combination(n, r);
+        });
+    }
+    
+    if (expr.includes("ln")) {
+        let lnRegex = /ln(\d*\.?\d*)/g
+        expr = expr.replace(lnRegex, function (match, n) {
+            if (n <= 0) {
+                throw new Error("Invalid logarithmic expression");
+            }
+
+            return Math.log(n);
+        });
+    }
+    
+    if (expr.includes("sin") || expr.includes("sin⁻¹") ||
+        expr.includes("cos") || expr.includes("cos⁻¹") ||
+        expr.includes("tan") || expr.includes("tan⁻¹")) {
+        expr = solveTrigo(expr)
+    } 
+
+    expr = eval(expr);
+
+    return expr;
+}
 
 Array.from(allbtns).forEach(element => {
     element.addEventListener('click', (e) => {
         if (e.target.innerText == "=") {
             try {
                 let expr = ansDisplay.value.replace(/x/g, '*').replace(/\^/g, '**')
-                expr = expr.replace(/\e/g, `${Math.E.toFixed(7)}`).replace(/\π/g, `${Math.PI.toFixed(7)}`)
-                if (ansDisplay.value.includes("√")) {
-                    let squareRootRegex = /√(\d+)/g;
-                    expr = expr.replace(squareRootRegex, function (match, digits) {
-                        return Math.sqrt(parseInt(digits, 10));
-                    });
-                    expr = eval(expr)
-                } else if (ansDisplay.value.includes("!")) {
-                    let pattern = /^-\d+!(.+)?$/g
-                    if (pattern.test(ansDisplay.value)) {
-                        expr = eval(expr);
-                    } else {
-                        let factRegex = /(\d+)!/g
-                        expr = expr.replace(factRegex, function (match, digits) {
-                            return calculateFactorial(parseInt(digits, 10));
-                        });
-                        expr = eval(expr);
-                    }
-                } else if (ansDisplay.value.includes("P")) {
-                    let permuRegex = /(\d+)P(\d+)/g
-                    expr = expr.replace(permuRegex, function (match, n, r) {
-                        return permutation(n, r);
-                    });
-                    expr = eval(expr);
-                } else if (ansDisplay.value.includes("C")) {
-                    let permuRegex = /(\d+)C(\d+)/g
-                    expr = expr.replace(permuRegex, function (match, n, r) {
-                        return combination(n, r);
-                    });
-                    expr = eval(expr);
-                } else if (ansDisplay.value.includes("ln")) {
-                    let lnRegex = /ln\((\d+)\)/g
-                    expr = expr.replace(lnRegex, function (match, n) {
-                        return Math.log(n);
-                    });
-                    expr = eval(expr);
-                } else if (ansDisplay.value.includes("log")) {
-                    let lnRegex = /log\((\d+),(\d+)\)/g
-                    expr = expr.replace(lnRegex, function (match, x, base) {
-                        return Math.log(x) / Math.log(base);;
-                    });
-                    expr = eval(expr);
-                } else if (ansDisplay.value.includes("sin") || ansDisplay.value.includes("sin⁻¹") ||
-                    ansDisplay.value.includes("cos") || ansDisplay.value.includes("cos⁻¹") ||
-                    ansDisplay.value.includes("tan") || ansDisplay.value.includes("tan⁻¹")) {
-                    expr = solveTrigo(ansDisplay.value)
-                    expr = eval(expr)
-                } else {
-                    expr = eval(expr);
-                }
+                expr = expr.replace(/\e/g, `${Math.E.toFixed(16)}`).replace(/\π/g, `${Math.PI.toFixed(16)}`)
+
+                expr = calculateAnswer(expr)
+                
                 if (typeof expr === "undefined" || isNaN(expr)) {
                     ansDisplay.value = "";
                     ansDisplay.focus()
@@ -257,14 +326,22 @@ Array.from(allbtns).forEach(element => {
                         checkOverflow()
                         lastCursor = ansDisplay.value.length
                     } else {
-                        const formattedExpr = expr.toFixed(5).replace(/\.?0+$/, '');
+                        expr = parseFloat(expr);
+                        let precision = parseInt(localStorage.getItem('precision')) || 6;
+                        const formattedExpr = expr.toFixed(precision).replace(/\.?0+$/, '');
                         ansDisplay.value = formattedExpr
-                        ansDisplay.focus()
+                        if (ansDisplay.value == "Infinity") {
+                            setTimeout(() => {
+                                ansDisplay.value = ''
+                                ansDisplay.focus()
+                            }, 1500)
+                        }
                         checkOverflow()
                         lastCursor = ansDisplay.value.length
                     }
                 }
             } catch (error) {
+                console.log(error)
                 ansDisplayError()
             }
         } else if (e.target.innerText == "AC") {
@@ -289,32 +366,16 @@ Array.from(allbtns).forEach(element => {
             } else {
                 insertAtCursor("x")
             }
-        } else if (e.target.innerText == "x/y") {
-            let temp = decimalToFraction(ansDisplay.value)
-            ansDisplay.value = ""
-            if (temp != -1) {
-                insertAtCursor(temp)
-            } else {
-                ansDisplayError()
-            }
-        } else if (e.target.innerText == "deg") {
+        }  else if (e.target.innerText == "deg") {
             isDegActive = true
-            ansDisplay.value = ""
             ansDisplay.focus()
-            lastCursor = 0
         } else if (e.target.innerText == "rad") {
             isDegActive = false
-            ansDisplay.value = ""
             ansDisplay.focus()
-            lastCursor = 0
         } else if (e.target.innerText == "ln") {
             insertAtCursor("ln()")
         } else if (e.target.innerText == "log") {
-            ansDisplay.value = 'log(number,base)';
-            setTimeout(() => {
-                ansDisplay.value = ''
-                insertAtCursor("log(,)");
-            }, 1200)
+            insertAtCursor("log(,)")
         } else if (e.target.innerText == "sin") {
             insertAtCursor("sin()");
         } else if (e.target.innerText == "cos") {
@@ -372,6 +433,7 @@ const divideButton = document.getElementsByClassName('fa-divide')[0].parentEleme
 divideButton.addEventListener('click', function () {
     insertAtCursor("/");
 });
+
 const delButton = del.parentElement;
 delButton.addEventListener('click', function () {
     let cursorPosition = ansDisplay.selectionStart || lastCursor;
@@ -391,18 +453,22 @@ delButton.addEventListener('click', function () {
     isStarting = false
 
 });
+
 const minusButton = document.getElementsByClassName('fa-minus')[0].parentElement;
 minusButton.addEventListener('click', function () {
     insertAtCursor("-");
 });
+
 const sqrtButton = document.getElementById('sqrt');
 sqrtButton.addEventListener('click', function () {
     insertAtCursor("√");
 });
+
 const piButton = document.getElementById('pi');
 piButton.addEventListener('click', function () {
     insertAtCursor("π");
 });
+
 const factorial = document.getElementById('factorial');
 factorial.addEventListener('click', function () {
     insertAtCursor("!");
@@ -414,8 +480,58 @@ function openModal() {
 
 function closeModal() {
     document.getElementById('myModal').style.display = 'none';
+    onUpdateSetting();
 }
-const info = document.getElementById('info');
-info.addEventListener('click', function () {
+
+const settingBtn = document.getElementById('settingBtn');
+settingBtn.addEventListener('click', function () {
     openModal();
+});
+
+const toggles = document.querySelectorAll('.toggle');
+
+toggles.forEach(toggle => {
+    toggle.addEventListener('click', function() {
+        toggle.classList.toggle('active');
+
+        if (toggle.classList.contains('active')) {
+            if (toggle.getAttribute('id') == "buttons-visible-toggle") {
+                localStorage.setItem('allBtns', "true");
+            } else if (toggle.getAttribute('id') == "radian-toggle") {
+                localStorage.setItem('angleType', "rad");
+            } else {
+                localStorage.setItem('trigoType', "inverse");
+            }
+        } else {
+            if (toggle.getAttribute('id') == "buttons-visible-toggle") {
+                localStorage.setItem('allBtns', "false");
+            } else if (toggle.getAttribute('id') == "radian-toggle") {
+                localStorage.setItem('angleType', "deg");
+            } else {
+                localStorage.setItem('trigoType', "simple");
+            }
+        }
+    });
+});
+
+const precisionValueElement = document.getElementById('precision-value');
+const decreaseButton = document.getElementById('precision-decrease');
+const increaseButton = document.getElementById('precision-increase');
+
+decreaseButton.addEventListener('click', function() {
+    let precisionValue = parseInt(precisionValueElement.textContent);
+    if (precisionValue > 0) { 
+        precisionValue--;
+        precisionValueElement.textContent = precisionValue;
+        localStorage.setItem('precision', precisionValue);
+    }
+});
+
+increaseButton.addEventListener('click', function() {
+    let precisionValue = parseInt(precisionValueElement.textContent);
+    if (precisionValue < 15) { 
+        precisionValue++;
+        precisionValueElement.textContent = precisionValue;
+        localStorage.setItem('precision', precisionValue);
+    }
 });
