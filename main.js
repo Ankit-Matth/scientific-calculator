@@ -33,9 +33,14 @@ function onUpdateSetting(){
 
     if (localStorage.getItem('trigoType')=="simple") {
         trigoType.classList.remove('active');
+        if (!invCodeExecuted) {
+            inverseBtn.click()
+        }
     } else {
         trigoType.classList.add('active');
-        inverseBtn.click()
+        if (invCodeExecuted) {
+            inverseBtn.click()
+        }
     }
 
     precisionValElement.textContent = parseInt(localStorage.getItem('precision'));
