@@ -9,10 +9,12 @@
         <title>Scientific Calculator</title>
     </head>
     <body>
+        <!-- Calculator container -->
         <div class="calculator">
             <div class="screen">
                 <input type="text" name="ansDisplay" id="ansDisplay" inputmode="none" autofocus spellcheck="false" oninput="checkOverflow()">
             </div>
+            <!-- Buttons container -->
             <div class="btns">
                 <div class="row">
                     <button class="hidden inv">sin<sup style="display: none;">-1</sup></button>
@@ -70,8 +72,21 @@
                     <button class="simpleCalcBtns">=</button>
                     <button class="simpleCalcBtns" style="margin-right: 2.6px;">+</button>
                 </div>
+                <div id="historyDiv" style="display: none;">
+                    <div class="topButtons">
+                        <div class="histBtns">Back</div>
+                        <div class="histBtns">Clear history</div>
+                    </div>
+                    <div id="allRows">
+                        <!-- <div class="rows">
+                            <div class="expression">4+4</div>
+                            <div class="answer">8</div>
+                        </div> -->
+                    </div>
+                </div>
             </div>
         </div>
+        <!-- Pop up for settings -->
         <div id="myModal" class="modal">
             <div class="modal-content">
                 <div class="topRight">

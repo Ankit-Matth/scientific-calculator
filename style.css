@@ -244,6 +244,69 @@ button:active {
     text-align: center;
 }
 
+.historyActive {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1),inset 0px -3px 5px #ffffff;
+	display: block;
+	overflow: auto;
+	max-width: 16.5rem;
+	max-height: 22rem;
+}
+
+.topButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-bottom: 10px;
+	gap: 10px;
+}
+
+.histBtns {
+	padding: 8px;
+	border: 1px solid #4e4d4d;
+	border-radius: 3px;
+	text-align: center;
+}
+
+.histBtns:first-child {
+	flex-grow: 1;
+}
+
+.histBtns:last-child {
+	flex-grow: 2;
+}
+
+.histBtns:hover {
+	cursor: pointer;
+	background-color: #ccc;
+}
+
+.rows {
+	width: 100%;
+	padding: 5px 8px;
+	border: 1px solid #4e4d4d;
+	border-radius: 4px;
+	margin-bottom: 10px;
+	overflow: auto;
+}
+
+.rows:hover {
+	cursor: pointer;
+	background-color: #ccc;
+}
+
+.expression {
+	font-size: 1rem;
+	font-weight: 300;
+}
+
+.answer {
+	font-size: 1.4rem;
+	font-weight: 800;
+}
+
 @media screen and (min-width: 567px) {
 	.modal-content {
 		padding: 20px;
@@ -285,10 +348,27 @@ button:active {
 
 	.modal-content {
 		width: 22.5rem;
+		padding: 10px;
 	}
 
-	.modal-content {
-		padding: 10px;
+	.simpleCalcBtns {
+		width: 3.45rem;
+		height: 3rem;
+	}
+
+	.simpleCalcTopBtns {
+		width: 3.45rem;
+		height: 2rem;
+	}
+
+	.smallBtns {
+		width: 2.6rem;
+		height: 2rem;
+	}
+
+	.hidden {
+		width: 2.6rem;
+		height: 2rem;
 	}
 
 	.close-button {
@@ -303,6 +383,28 @@ button:active {
 
 	.setting > span {
 		font-size: 0.6rem;
+	}
+}
+
+@media screen and (max-width: 350px) {
+	.simpleCalcBtns {
+		width: 3.4rem;
+		height: 3rem;
+	}
+
+	.simpleCalcTopBtns {
+		width: 3.4rem;
+		height: 2rem;
+	}
+
+	.smallBtns {
+		width: 2.5rem;
+		height: 1.9rem;
+	}
+
+	.hidden {
+		width: 2.5rem;
+		height: 1.9rem;
 	}
 }
 

@@ -3,6 +3,7 @@ let setting = document.getElementById('setting')
 let moreBtns = document.getElementById('moreBtns')
 let ansDisplay = document.getElementById('ansDisplay')
 
+// Function to update settings based on local storage
 function onUpdateSetting(){
     let btnsVisibility = document.getElementById('buttons-visible-toggle')
     let angleType = document.getElementById('radian-toggle')
@@ -41,6 +42,7 @@ function onUpdateSetting(){
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Set default values if not present in local storage
     if (!localStorage.getItem('angleType')) {
         localStorage.setItem('allBtns', 'false');
         localStorage.setItem('angleType', 'deg');
@@ -51,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
     onUpdateSetting();
 });
 
+// Function to check and adjust the font size based on input length
 function checkOverflow() {  
     if (ansDisplay.value.length <= 16) {
         ansDisplay.style.fontSize = "1.6rem";
@@ -96,12 +99,15 @@ moreBtns.addEventListener('click', () => {
 
 var isStarting = false
 var lastCursor = 0
+
+// Event listener to manage input focus and cursor position
 ansDisplay.addEventListener('click', () => {
     if (ansDisplay.selectionStart == 0 && ansDisplay.value.length > 0) {
         isStarting = true
     }
 })
 
+// Function to insert text at cursor position
 function insertAtCursor(value) {
     let cursorPosition = ansDisplay.selectionStart || lastCursor;
     if (isStarting) {
@@ -122,6 +128,7 @@ function insertAtCursor(value) {
     isStarting = false
 }
 
+// Function to display an error message in the answer display
 function ansDisplayError() {
     ansDisplay.value = 'Invalid Input';
     setTimeout(() => {
@@ -149,10 +156,12 @@ function combination(n, r) {
     return result
 }
 
+// Function to convert degrees to radians
 function toRadians(degrees) {
     return degrees * (Math.PI / 180);
 }
 
+// Function to convert radians to degrees
 function toDegrees(radians) {
     return radians * (180 / Math.PI);
 }
@@ -301,11 +310,46 @@ function calculateAnswer(expr){
         expr = solveTrigo(expr)
     } 
 
+    // Evaluate the final expression
     expr = eval(expr);
 
     return expr;
 }
 
+// Function to save the calculation history
+function saveHistory(expression, answer){
+    let temp = ''
+    temp = temp.toString()
+    expression = expression.toString()
+    answer = answer.toString()
+
+    if (expression.startsWith('(')) {
+        temp = expression.slice(1, -1);
+    }
+
+    if (expression.startsWith('+')) {
+        temp = expression.slice(1);
+    }
+
+    if (temp.startsWith('+')) {
+        temp = temp.slice(1);
+    }
+
+    if (answer !== "Infinity" && expression !== answer && temp !== answer ) {
+        let history = localStorage.getItem('ansHistory');
+
+        history = history ? JSON.parse(history) : [];
+
+        console.log(expression)
+        console.log(answer)
+
+        history.push({ expression: expression, answer: answer });
+
+        localStorage.setItem('ansHistory', JSON.stringify(history));
+    }
+}
+
+// Event listeners to all buttons for their respective actions
 Array.from(allbtns).forEach(element => {
     element.addEventListener('click', (e) => {
         if (e.target.innerText == "=") {
@@ -321,6 +365,7 @@ Array.from(allbtns).forEach(element => {
                     lastCursor = 0
                 } else {
                     if (Number.isInteger(expr)) {
+                        saveHistory(ansDisplay.value,expr)
                         ansDisplay.value = expr;
                         ansDisplay.focus()
                         checkOverflow()
@@ -329,6 +374,7 @@ Array.from(allbtns).forEach(element => {
                         expr = parseFloat(expr);
                         let precision = parseInt(localStorage.getItem('precision')) || 6;
                         const formattedExpr = expr.toFixed(precision).replace(/\.?0+$/, '');
+                        saveHistory(ansDisplay.value,formattedExpr)
                         ansDisplay.value = formattedExpr
                         if (ansDisplay.value == "Infinity") {
                             setTimeout(() => {
@@ -341,7 +387,6 @@ Array.from(allbtns).forEach(element => {
                     }
                 }
             } catch (error) {
-                console.log(error)
                 ansDisplayError()
             }
         } else if (e.target.innerText == "AC") {
@@ -474,10 +519,12 @@ factorial.addEventListener('click', function () {
     insertAtCursor("!");
 });
 
+// Function to open the settings modal
 function openModal() {
     document.getElementById('myModal').style.display = 'flex';
 }
 
+// Function to close the settings modal
 function closeModal() {
     document.getElementById('myModal').style.display = 'none';
     onUpdateSetting();
@@ -490,6 +537,7 @@ settingBtn.addEventListener('click', function () {
 
 const toggles = document.querySelectorAll('.toggle');
 
+// Event listeners for toggling settings and updating localStorage
 toggles.forEach(toggle => {
     toggle.addEventListener('click', function() {
         toggle.classList.toggle('active');
@@ -533,5 +581,91 @@ increaseButton.addEventListener('click', function() {
         precisionValue++;
         precisionValueElement.textContent = precisionValue;
         localStorage.setItem('precision', precisionValue);
+    }
+});
+
+// Event listener to display the history of calculations
+const history = document.getElementById('history');
+let btns = document.getElementsByClassName('btns')[0];
+let historyDiv = document.getElementById('historyDiv');
+let allRows = document.getElementById('allRows');
+
+history.addEventListener('click', function () {
+    let rows = document.querySelectorAll('.row');
+    rows.forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    btns.classList.add('historyActive')
+    historyDiv.style.display="block"
+
+    let historyData = localStorage.getItem('ansHistory');
+
+    if (historyData) {
+        allRows.innerHTML = ''
+        historyData = JSON.parse(historyData);
+        
+        // Reverse the array
+        historyData.reverse();
+    
+        historyData.forEach(item => {
+            const row = document.createElement('div');
+            row.className = "rows";
+            
+            const expressionDiv = document.createElement('div');
+            expressionDiv.className = 'expression';
+            expressionDiv.textContent = item.expression;
+            if (item.expression.length <= 30) {
+                expressionDiv.style.fontSize = "1rem";
+            } else if (item.expression.length > 30 && item.expression.length < 40) {
+                expressionDiv.style.fontSize = "0.8rem";
+            } else {
+                expressionDiv.style.fontSize = "0.66rem";
+            }
+    
+            const answerDiv = document.createElement('div');
+            answerDiv.className = 'answer';
+            answerDiv.textContent = item.answer;
+            if (item.answer.length <= 16) {
+                answerDiv.style.fontSize = "1.4rem";
+            } else if (item.answer.length > 16 && item.answer.length < 24) {
+                answerDiv.style.fontSize = "1rem";
+            } else {
+                answerDiv.style.fontSize = "0.7rem";
+            }
+    
+            row.appendChild(expressionDiv);
+            row.appendChild(answerDiv);
+    
+            allRows.appendChild(row);
+        });
+    } else {
+        allRows.innerHTML = `<div class="rows">No history.</div>`;
+    }
+});
+
+let back = document.getElementsByClassName('histBtns')[0]
+let clearHistory = document.getElementsByClassName('histBtns')[1]
+
+back.addEventListener('click', function () {
+    let rows = document.querySelectorAll('.row');
+    rows.forEach(row => {
+        row.style.display = 'flex';
+    });
+    
+    btns.classList.remove('historyActive')
+    historyDiv.style.display="none"
+});
+
+clearHistory.addEventListener('click',()=>{
+    localStorage.removeItem('ansHistory');
+    allRows.innerHTML = `<div class="rows">No history.</div>`
+})
+
+// Event delegation for dynamically created .rows elements
+allRows.addEventListener('click', function(event) {
+    const row = event.target.closest('.rows');
+    if (row && row.textContent.trim() !== 'No history.') {
+        insertAtCursor(row.lastElementChild.innerHTML);
     }
 });
