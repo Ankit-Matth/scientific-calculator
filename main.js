@@ -337,14 +337,18 @@ function saveHistory(expression, answer){
 
     if (answer !== "Infinity" && expression !== answer && temp !== answer ) {
         let history = localStorage.getItem('ansHistory');
-
+    
         history = history ? JSON.parse(history) : [];
-
-        console.log(expression)
-        console.log(answer)
-
+    
+        // Push the new item
         history.push({ expression: expression, answer: answer });
-
+    
+        // Check if history length exceeds 30
+        if (history.length > 30) {
+            // Remove the first item
+            history.shift();
+        }
+    
         localStorage.setItem('ansHistory', JSON.stringify(history));
     }
 }
