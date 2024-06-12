@@ -6,9 +6,7 @@ I developed this scientific calculator using HTML, CSS, and JavaScript. This cal
 
 - **Live link** - https://ankit-matth.github.io/scientific-calculator/
 
-
-https://github.com/Ankit-Matth/scientific-calculator/assets/146843890/b7572f8f-5dd1-4e53-8718-4016971c8be3
-
+https://github.com/Ankit-Matth/scientific-calculator/assets/146843890/fb063856-42cd-461d-a0c2-d7b98d88a335
 
 ## Technologies Used
 
