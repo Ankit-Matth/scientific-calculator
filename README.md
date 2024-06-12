@@ -1,6 +1,6 @@
 # Scientific Calculator
 
-I created this scientific calculator using HTML, CSS, and JavaScript. This calculator supports a wide range of different mathematical functions, from basic arithmetic (addition, subtraction, multiplication, division) to advanced features like trigonometry, logarithms, exponentiation, permutations, combinations and more.
+I developed this scientific calculator using HTML, CSS, and JavaScript. This calculator supports a wide range of mathematical functions, from basic arithmetic operations (addition, subtraction, multiplication, division) to advanced features such as trigonometry, logarithms, exponentiation, permutations, combinations, and more. It's not limited to solving basic expressions; it efficiently handles complex and nested expressions as I utilized the concept of regular expressions in JavaScript. Additionally, I incorporated features like calculation history and customizable default settings, etc., using the concept of local storage.
 
 ## Quick Demo
 
@@ -16,24 +16,13 @@ https://github.com/Ankit-Matth/scientific-calculator/assets/146843890/b7572f8f-5
 2. CSS
 3. JavaScript
 
-In this project, I used HTML to structure the content, CSS to ensure styling and responsiveness, and JavaScript for dynamic interactions and to solve mathematical expressions. To achieve the mathematical computations, I used various built-in functions in JavaScript, such as eval() and the functions like Math.log(), Math.PI, Math.sin(), and others. Additionally, I applied the concept of regular expressions to handle expressions within the project.
-
-## Getting Started 
-
-Follow the steps below to install and run the project on your local machine.
-
-**1. Clone this repository:**
-  ```bash
-  git clone https://github.com/Ankit-Matth/scientific-calculator.git
-  ```
-
-**2. Access the project directory:**
-  ```bash
-  cd scientific-calculator
-  ```
-**3. Open the `index.html` file in your web browser and see the magic.**
+In this project, I used HTML to structure the content, CSS to ensure styling and responsiveness, and JavaScript for dynamic interactions and to solve mathematical expressions. To achieve the mathematical computations, I used various built-in functions in JavaScript, such as eval() and the functions like Math.log(), Math.PI, Math.sin(), and others. Additionally, I implemented the concept of regular expressions in JavaScript to efficiently handle complex and nested expressions.
  
 ## Features
+
+### Advance features
+- **Calculation History:** Implemented using local storage to keep track of previous calculations.
+- **Settings Button:** Added buttons to adjust default settings for enhanced user customization.
 
 ### Basic Operations
 - Addition
@@ -42,7 +31,7 @@ Follow the steps below to install and run the project on your local machine.
 - Division
 - and more...
 
-### Trigonometric Functions  (supports both degrees and radians)
+### Trigonometric Functions (supports both degrees and radians)
 - Sine
 - Cosine
 - Tangent
@@ -59,6 +48,7 @@ Follow the steps below to install and run the project on your local machine.
 ### Exponential Functions
 - Exponential power
 - e^x
+- 10^x 
 
 ### Other Functions
 - Square Root
@@ -68,3 +58,18 @@ Follow the steps below to install and run the project on your local machine.
 ## Known Issues
 
 Although I have tried my best to replicate the features of the mobile inbuilt calculator, it cannot handle all complex expressions perfectly. However, these complex mathematical expressions can be easily handled using regular expressions in JavaScript, but due to limited time, I did not do so.
+
+## Getting Started 
+
+Follow the steps below to install and run the project on your local machine.
+
+**1. Clone this repository:**
+  ```bash
+  git clone https://github.com/Ankit-Matth/scientific-calculator.git
+  ```
+
+**2. Access the project directory:**
+  ```bash
+  cd scientific-calculator
+  ```
+**3. Open the `index.html` file in your web browser and see the magic.**
